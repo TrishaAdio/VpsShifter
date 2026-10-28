@@ -3,13 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import net from 'node:net';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { Remote, SCRIPTS, shq, records, fieldsOf, dec, sleep } from './ssh.js';
 import { parseProbe, parseScan, parseInspect, buildProjects, inspectInputs, inspectScript, splitArgs, parseNginx } from './scan.js';
 import { computePlan, DEFAULT_OPTIONS, fmtKB } from './plan.js';
 import { Transfer } from './transfer.js';
 
 const posix = path.posix;
-export const DATA_DIR = process.env.SHIFT_DATA || path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'data');
+export const DATA_DIR = process.env.SHIFT_DATA || path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data');
 fs.mkdirSync(path.join(DATA_DIR, 'jobs'), { recursive: true, mode: 0o700 });
 
 export const STEPS = [
