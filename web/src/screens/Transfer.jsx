@@ -59,8 +59,12 @@ export default function Transfer({ state, logs, jobId }) {
       </div>
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_330px]">
         <div className="flex min-w-0 flex-col items-center">
+          <div className="relative">
+          <motion.div className="absolute inset-0 rounded-full" style={{ background: rolling ? 'radial-gradient(circle, #ff9f0a55, transparent 65%)' : 'radial-gradient(circle, #5e5ce655, transparent 65%)', filter: 'blur(20px)' }}
+            animate={{ scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 2.6, repeat: Infinity }} />
           <ActivityRings size={230} values={[p.files || 0, p.databases || 0, p.services || 0]}
             labels={<div><div className="text-[40px] font-bold tabular-nums tracking-[-0.04em]">{pct}<span className="text-[22px]">%</span></div><div className="text-secondary -mt-1 text-[12px]">{rolling ? 'rolling back' : 'complete'}</div></div>} />
+          </div>
           <div className="mt-4 flex gap-4 text-[12.5px]">
             {[['Files', '#ff2d55', p.files], ['Databases', '#30d158', p.databases], ['Services', '#0a84ff', p.services]].map(([n, c, v]) => (
               <span key={n} className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />{n} <span className="text-tertiary tabular-nums">{Math.round((v || 0) * 100)}%</span></span>

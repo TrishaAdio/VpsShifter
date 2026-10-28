@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ActivityRings, CheckBadge, Button, Terminal, Sheet, Field, Chip, I, cx, spring, bouncy, toast } from '../ui.jsx';
 import { Steps } from './Transfer.jsx';
 import { api } from '../api.js';
+import { Confetti, Tilt } from '../fx.jsx';
 
 function Hero({ status, error }) {
   const conf = {
@@ -60,10 +61,11 @@ export default function Done({ state, logs, jobId, onAgain, onNew }) {
 
   return (
     <div className="scroll-thin flex-1 overflow-y-auto px-4 py-8 sm:px-8">
+      <Confetti fire={(state.status === 'done' || state.status === 'rehearsed') && !localStorage.getItem(`shift-confetti-${jobId}`) && (localStorage.setItem(`shift-confetti-${jobId}`, '1'), true)} />
       <Hero status={state.status} error={state.error} />
       {state.status === 'done' && (
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4, ...spring }} className="mt-6 flex justify-center">
-          <ActivityRings size={120} values={[1, 1, 1]} />
+          <Tilt max={20} glare={false} className="rounded-full"><motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 1.4, ease: [0.2, 0.8, 0.2, 1] }}><ActivityRings size={130} values={[1, 1, 1]} /></motion.div></Tilt>
         </motion.div>
       )}
 

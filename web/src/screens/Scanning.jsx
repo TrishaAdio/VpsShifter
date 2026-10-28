@@ -10,7 +10,16 @@ export default function Scanning({ state, logs, onBack }) {
       <AnimatePresence mode="wait">
         {!failed ? (
           <motion.div key="scan" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="flex flex-col items-center">
-            <Radar icon={<I.Search size={30} strokeWidth={2.4} />} />
+            <div className="relative">
+              <Radar icon={<I.Search size={30} strokeWidth={2.4} />} size={260} />
+              {[[I.Send, '#0a84ff', -120, -40], [I.Globe, '#30d158', 115, -55], [I.Database, '#ff9f0a', 105, 75], [I.Braces, '#bf5af2', -110, 80], [I.Container, '#64d2ff', 0, -130]].map(([Ic, c, x, y], i) => (
+                <motion.div key={i} className="glass absolute left-1/2 top-1/2 grid h-10 w-10 place-items-center rounded-[12px]" style={{ color: c, marginLeft: -20, marginTop: -20 }}
+                  initial={{ x: 0, y: 0, scale: 0, opacity: 0 }} animate={{ x, y: [y, y - 8, y], scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.6 + i * 0.5, scale: { type: 'spring', stiffness: 400, damping: 14, delay: 0.6 + i * 0.5 }, y: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.6 + i * 0.5 } }}>
+                  <Ic size={19} strokeWidth={2.3} />
+                </motion.div>
+              ))}
+            </div>
             <h2 className="mt-6 text-[26px] font-bold tracking-[-0.025em]">Looking for your projects…</h2>
             <motion.p key={state?.progress?.current} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-secondary mt-1.5 min-h-[22px] text-[15px]">
               {state?.progress?.current || 'Connecting to both servers…'}

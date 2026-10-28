@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button, Switch, Segmented, Chip, CheckBadge, Sheet, Field, ServerFlow, Spinner, I, cx, spring, bouncy, toast } from '../ui.jsx';
 import { api, fmtKB } from '../api.js';
+import { Tilt, GlowRing, SpringNumber } from '../fx.jsx';
 
 const ICONS = {
   telegram: [I.Send, 'from-[#5ac8fa] to-[#0a84ff]'],
@@ -33,12 +34,14 @@ function ProjectCard({ p, selected, onToggle, jobId, onAuthed, index }) {
   };
   return (
     <motion.div layout initial={{ opacity: 0, y: 18, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...bouncy, damping: 24, delay: Math.min(index * 0.05, 0.6) }}
-      className={cx('glass-soft overflow-hidden rounded-[20px] transition-opacity', !selected && 'opacity-55')}>
+      whileHover={{ y: -2 }} className={cx('glass-soft card-hover overflow-hidden rounded-[20px] transition-[opacity,filter] duration-300', !selected && 'opacity-50 saturate-0')}>
       <div className="flex cursor-pointer items-center gap-3.5 px-4 py-3.5" onClick={() => setOpen(!open)}>
-        <div className={cx('relative grid h-11 w-11 shrink-0 place-items-center rounded-[13px] bg-gradient-to-br text-white shadow-md', grad)}>
+        <motion.div whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }} transition={{ duration: 0.5 }} className={cx('relative grid h-11 w-11 shrink-0 place-items-center rounded-[13px] bg-gradient-to-br text-white shadow-md', grad)}>
           <Icon size={20} />
-          <span className={cx('absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-[2.5px] border-white dark:border-[#1c1c22]', p.running ? 'bg-[var(--color-ios-green)]' : 'bg-[#8e8e93]')} />
-        </div>
+          <span className={cx('absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-[2.5px] border-white dark:border-[#1c1c22]', p.running ? 'bg-[var(--color-ios-green)]' : 'bg-[#8e8e93]')}>
+            {p.running && <span className="absolute inset-0 animate-ping rounded-full bg-[var(--color-ios-green)] opacity-60" />}
+          </span>
+        </motion.div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="truncate text-[15px] font-semibold tracking-tight">{p.title}</span>
@@ -154,7 +157,7 @@ export default function Review({ state, jobId, onBack }) {
         <div className="scroll-thin min-h-0 overflow-y-auto px-4 py-5 sm:px-6 lg:max-h-[calc(100dvh-210px)]">
           <div className="mb-3 flex items-end justify-between px-1">
             <div>
-              <h2 className="text-[22px] font-bold tracking-[-0.02em]">Found {projects.length} thing{projects.length === 1 ? '' : 's'} to move</h2>
+              <h2 className="text-[24px] font-extrabold tracking-[-0.03em]">Found <span className="text-rainbow"><SpringNumber value={projects.length} /></span> thing{projects.length === 1 ? '' : 's'} to move</h2>
               <p className="text-secondary text-[13px]">Everything is selected. Untick anything you want to leave behind.</p>
             </div>
             <button className="text-[13px] font-medium text-[var(--color-ios-blue)]" onClick={() => setSelection(selection.length === projects.length ? [] : projects.map((p) => p.id))}>
@@ -211,9 +214,11 @@ export default function Review({ state, jobId, onBack }) {
                 <span>{sel.length} selected</span>
                 <span>{fmtKB((pf?.totalKB || 0) + (pf?.dbKB || 0))} to copy</span>
               </div>
-              <Button size="lg" className="w-full" disabled={!ready} onClick={() => setConfirm(true)} icon={<I.Play size={18} fill="currentColor" />}>
-                {options.rehearsal ? 'Start rehearsal' : 'Start transfer'}
-              </Button>
+              <GlowRing radius={16} active={ready}>
+                <Button size="lg" className="w-full" disabled={!ready} onClick={() => setConfirm(true)} icon={<I.Play size={18} fill="currentColor" />}>
+                  {options.rehearsal ? 'Start rehearsal' : 'Start transfer'}
+                </Button>
+              </GlowRing>
               <Button variant="ghost" className="mt-2 w-full" onClick={onBack}>Change servers</Button>
             </div>
           </div>

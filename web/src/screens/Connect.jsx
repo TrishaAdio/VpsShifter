@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button, Field, Switch, Shake, CheckBadge, Sheet, Spinner, I, cx, bouncy, toast } from '../ui.jsx';
 import { api, fmtKB } from '../api.js';
+import { Tilt, GlowRing } from '../fx.jsx';
 
 function ServerCard({ side, value, onChange, result, testing, onTest, index }) {
   const isOld = side === 'source';
@@ -9,7 +10,8 @@ function ServerCard({ side, value, onChange, result, testing, onTest, index }) {
   return (
     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 + index * 0.08, ...bouncy, damping: 24 }} className="min-w-0 flex-1">
       <Shake when={result && !result.ok ? result.t : 0}>
-        <div className={cx('glass-soft rounded-[22px] p-5 transition-shadow', result?.ok && 'shadow-[0_0_0_2px_rgba(48,209,88,.55)]', result && !result.ok && 'shadow-[0_0_0_2px_rgba(255,69,58,.55)]')}>
+        <Tilt max={4} glare className="rounded-[22px]">
+        <div className={cx('glass rounded-[22px] p-5 transition-shadow duration-500', result?.ok && 'shadow-[0_0_0_2px_rgba(48,209,88,.6),0_20px_60px_-15px_rgba(48,209,88,.55)]', result && !result.ok && 'shadow-[0_0_0_2px_rgba(255,69,58,.6),0_20px_60px_-15px_rgba(255,69,58,.5)]')}>
           <div className="mb-4 flex items-center gap-3">
             <div className={cx('grid h-11 w-11 place-items-center rounded-[13px] text-white shadow-lg', isOld ? 'bg-gradient-to-br from-[#8e8e93] to-[#3a3a3c]' : 'bg-gradient-to-br from-[#30d158] to-[#0a84ff]')}>
               <I.Server size={21} />
@@ -60,6 +62,7 @@ function ServerCard({ side, value, onChange, result, testing, onTest, index }) {
             )}
           </AnimatePresence>
         </div>
+        </Tilt>
       </Shake>
     </motion.div>
   );
@@ -116,23 +119,28 @@ export default function Connect({ servers, setServers, onBack, onJob }) {
   return (
     <div className="flex flex-1 flex-col px-4 py-6 sm:px-8 sm:py-8">
       <div className="mb-6 text-center">
-        <h2 className="text-[26px] font-bold tracking-[-0.025em] sm:text-[30px]">Connect your two servers</h2>
+        <h2 className="text-[28px] font-extrabold tracking-[-0.035em] sm:text-[36px]">Connect your <span className="text-rainbow">two servers</span></h2>
         <p className="text-secondary mx-auto mt-1 max-w-md text-[15px]">Enter the login you use for SSH. Shift only uses it during the move.</p>
       </div>
       <div className="flex flex-col items-stretch gap-4 lg:flex-row lg:items-center">
         <ServerCard side="source" index={0} value={servers.source} onChange={(v) => setServers((s) => ({ ...s, source: v }))} result={results.source} testing={testing.source} onTest={() => test('source')} />
         <div className="flex shrink-0 items-center justify-center lg:w-16">
-          <motion.div animate={{ x: [0, 6, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-            className="glass-soft grid h-12 w-12 rotate-90 place-items-center rounded-full text-[var(--color-ios-blue)] lg:rotate-0">
-            <I.ArrowRight size={22} strokeWidth={2.5} />
-          </motion.div>
+          <div className="relative grid h-14 w-14 rotate-90 place-items-center lg:rotate-0">
+            {[0, 1].map((i) => <motion.span key={i} className="absolute inset-0 rounded-full bg-[var(--color-ios-blue)]/30" animate={{ scale: [1, 1.9], opacity: [0.6, 0] }} transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.9 }} />)}
+            <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-[#0a84ff] to-[#bf5af2] text-white shadow-[0_10px_30px_-6px_rgba(94,92,230,.9)]">
+              <I.ArrowRight size={22} strokeWidth={2.6} />
+            </motion.div>
+          </div>
         </div>
         <ServerCard side="target" index={1} value={servers.target} onChange={(v) => setServers((s) => ({ ...s, target: v }))} result={results.target} testing={testing.target} onTest={() => test('target')} />
       </div>
       <div className="mt-auto flex flex-col-reverse items-center justify-between gap-3 pt-8 sm:flex-row">
         <Button variant="ghost" onClick={onBack} icon={<I.ArrowLeft size={17} />}>Back</Button>
-        <Button size="lg" onClick={proceed} disabled={!filled(servers.source) || !filled(servers.target)} loading={testing.source || testing.target}
-          icon={<I.Radar size={19} />} className="w-full sm:w-auto sm:min-w-[260px]">Find my projects</Button>
+        <GlowRing radius={16} active={!!(filled(servers.source) && filled(servers.target))} className="w-full sm:w-auto">
+          <Button size="lg" onClick={proceed} disabled={!filled(servers.source) || !filled(servers.target)} loading={testing.source || testing.target}
+            icon={<I.Radar size={19} />} className="w-full sm:min-w-[260px]">Find my projects</Button>
+        </GlowRing>
       </div>
 
       <Sheet open={sheet} onClose={() => setSheet(false)} width={520}>

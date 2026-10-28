@@ -120,3 +120,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
+
+/* ---------- vibrant extras ---------- */
+@keyframes shimmer { 0% { transform: translateX(-120%) skewX(-20deg); } 60%, 100% { transform: translateX(260%) skewX(-20deg); } }
+.btn-shimmer { position: relative; overflow: hidden; isolation: isolate; }
+.btn-shimmer::after {
+  content: ""; position: absolute; inset: 0; width: 40%; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  animation: shimmer 2.8s ease-in-out infinite;
+}
+.btn-gradient { background-image: linear-gradient(120deg, #0a84ff, #5e5ce6 45%, #bf5af2); background-size: 200% 100%; transition: background-position .6s, filter .2s; }
+.btn-gradient:hover { background-position: 100% 0; }
+@keyframes hue { to { filter: hue-rotate(360deg); } }
+.text-rainbow { background: linear-gradient(90deg, #0a84ff, #bf5af2, #ff375f, #ff9f0a, #0a84ff); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: slide 8s linear infinite; }
+@keyframes slide { to { background-position: 300% 0; } }
+.glow-blue { box-shadow: 0 0 0 1px rgba(10,132,255,.25), 0 10px 40px -8px rgba(10,132,255,.55); }
+@keyframes floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+.floaty { animation: floaty 5s ease-in-out infinite; }
+.card-hover { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -18px rgba(40,40,120,.45); }

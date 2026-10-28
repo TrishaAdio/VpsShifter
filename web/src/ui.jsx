@@ -8,37 +8,6 @@ export const bouncy = { type: 'spring', stiffness: 500, damping: 18 };
 
 export const cx = (...a) => a.filter(Boolean).join(' ');
 
-/* ---------------- Wallpaper: slowly drifting mesh gradient ---------------- */
-export function Wallpaper({ tone = 'blue' }) {
-  const palettes = {
-    blue: ['#5ac8fa', '#5e5ce6', '#bf5af2', '#64d2ff'],
-    green: ['#30d158', '#64d2ff', '#5ac8fa', '#a4f4c4'],
-    orange: ['#ff9f0a', '#ff375f', '#bf5af2', '#ffd60a'],
-    red: ['#ff453a', '#ff9f0a', '#bf5af2', '#ff375f'],
-  };
-  const c = palettes[tone] || palettes.blue;
-  const blobs = [
-    { color: c[0], size: 70, x: ['-10%', '15%', '-5%'], y: ['-10%', '10%', '-15%'], d: 26 },
-    { color: c[1], size: 60, x: ['60%', '40%', '65%'], y: ['-5%', '20%', '0%'], d: 30 },
-    { color: c[2], size: 65, x: ['30%', '60%', '20%'], y: ['55%', '35%', '65%'], d: 34 },
-    { color: c[3], size: 45, x: ['75%', '55%', '80%'], y: ['60%', '75%', '50%'], d: 22 },
-  ];
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-[#eef0fb] dark:bg-[#05050a]">
-      {blobs.map((b, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full opacity-55 dark:opacity-35"
-          style={{ width: `${b.size}vmax`, height: `${b.size}vmax`, background: `radial-gradient(circle at 50% 50%, ${b.color}, transparent 65%)`, filter: 'blur(40px)' }}
-          animate={{ left: b.x, top: b.y, backgroundColor: 'transparent' }}
-          transition={{ duration: b.d, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-        />
-      ))}
-      <div className="absolute inset-0 opacity-[0.035] dark:opacity-[0.06]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.8%27 numOctaves=%274%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E")' }} />
-    </div>
-  );
-}
-
 /* ---------------- macOS window ---------------- */
 export function TrafficLights({ onClose }) {
   const [hover, setHover] = useState(false);
@@ -93,7 +62,7 @@ export function Window({ title, subtitle, children, toolbar, onClose, wide }) {
 /* ---------------- Buttons & controls ---------------- */
 export function Button({ children, variant = 'primary', size = 'md', className, loading, disabled, icon, ...p }) {
   const v = {
-    primary: 'bg-[var(--color-ios-blue)] text-white shadow-[0_8px_24px_-8px_rgba(10,132,255,.7)] hover:brightness-110',
+    primary: 'btn-gradient btn-shimmer text-white shadow-[0_10px_30px_-8px_rgba(94,92,230,.8)] hover:shadow-[0_14px_40px_-8px_rgba(191,90,242,.85)]',
     secondary: 'bg-black/[.06] dark:bg-white/[.10] hover:bg-black/[.09] dark:hover:bg-white/[.14]',
     ghost: 'hover:bg-black/[.05] dark:hover:bg-white/[.08]',
     danger: 'bg-[var(--color-ios-red)] text-white shadow-[0_8px_24px_-8px_rgba(255,69,58,.7)] hover:brightness-110',
@@ -331,7 +300,7 @@ export function ServerFlow({ left, right, active = true, tone = 'blue', reverse 
 
 export function ServerChip({ label, host, os, tone = 'blue', dim }) {
   return (
-    <div className={cx('glass-soft flex min-w-0 items-center gap-2.5 rounded-2xl px-3 py-2 transition-opacity sm:px-4 sm:py-3', dim && 'opacity-60')}>
+    <div className={cx('glass-soft card-hover flex min-w-0 items-center gap-2.5 rounded-2xl px-3 py-2 transition-opacity sm:px-4 sm:py-3', dim && 'opacity-60')}>
       <div className={cx('grid h-9 w-9 shrink-0 place-items-center rounded-xl text-white', tone === 'green' ? 'bg-gradient-to-br from-[#30d158] to-[#0a84ff]' : 'bg-gradient-to-br from-[#8e8e93] to-[#48484a]')}>
         <I.Server size={18} />
       </div>
@@ -467,3 +436,4 @@ export function useCountdown() {
 }
 
 export { I, motion, AnimatePresence };
+export { Aurora as Wallpaper } from './fx.jsx';
